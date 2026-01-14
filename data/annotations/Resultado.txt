@@ -1,0 +1,157 @@
+================================================================================
+                         INFORME RADIOLOGICO
+================================================================================
+
+ESTUDIO:        TC cerebral sin contraste y AngioTC de arterias cerebrales
+TECNICA:        Adquisicion helicoidal volumetrica multicorte con
+                reconstrucciones multiplanares (MPR) en planos axial,
+                coronal y sagital. Reconstrucciones MIP y VR.
+
+================================================================================
+                              HALLAZGOS
+================================================================================
+
+I. TC CEREBRAL SIN CONTRASTE
+--------------------------------------------------------------------------------
+
+   PARENQUIMA CEREBRAL:
+   - Densidad del parenquima cerebral dentro de parametros normales.
+   - Adecuada diferenciacion cortico-subcortical.
+   - No se identifican lesiones focales intra ni extra-axiales.
+   - Ausencia de areas de edema vasogenico o citotoxico.
+   - No hay evidencia de hemorragia intraparenquimatosa.
+   - No se observan colecciones subdurales ni epidurales.
+   - Sin signos de isquemia aguda establecida.
+
+   SISTEMA VENTRICULAR Y CISTERNAS:
+   - Ventriculos laterales simetricos, de tamano y morfologia normal.
+   - Tercer ventriculo en linea media, de dimensiones conservadas.
+   - Cuarto ventriculo de forma y tamano normal.
+   - Cisternas basales permeables.
+   - No hay signos de hidrocefalia.
+   - Linea media centrada.
+
+   ESTRUCTURAS DE FOSA POSTERIOR:
+   - Cerebelo de morfologia y densidad normal.
+   - Tronco encefalico sin alteraciones.
+   - Angulo pontocerebeloso libre bilateralmente.
+
+   SENOS PARANASALES Y BASE DE CRANEO:
+   - Senos paranasales neumatizados.
+   - Celdillas mastoideas de caracteristicas normales.
+   - Orbitas simetricas sin alteraciones.
+   - Silla turca de morfologia normal.
+
+   ESTRUCTURAS OSEAS:
+   - Calota craneal de grosor y densidad normal.
+   - Base de craneo sin lesiones liticas ni blasticas.
+   - No se identifican trazos de fractura.
+
+================================================================================
+
+II. ANGIOTC DE ARTERIAS CEREBRALES
+--------------------------------------------------------------------------------
+
+   CIRCULACION ANTERIOR:
+
+   Arterias carotidas internas:
+   - Segmentos cavernoso, clinoideo y supraclinoideo de calibre conservado
+     bilateralmente, sin estenosis significativas.
+
+   Arteria cerebral media derecha:
+   ┌─────────────────────────────────────────────────────────────────────────┐
+   │  ** ANEURISMA SACULAR EN SEGMENTO M1 DERECHO **                        │
+   │                                                                         │
+   │  - Localizacion:       Segmento M1 (esfenoidal) de ACM derecha         │
+   │  - Morfologia:         Sacular                                          │
+   │  - Tamano del saco:    4.2 x 3.8 mm                                     │
+   │  - Cuello:             2.5 mm                                           │
+   │  - Relacion saco/cuello: 1.68                                           │
+   │  - Orientacion:        Superior                                         │
+   │  - Calcificaciones:    No se observan                                   │
+   │  - Signos de ruptura:  No se identifican                                │
+   └─────────────────────────────────────────────────────────────────────────┘
+
+   Arteria cerebral media izquierda:
+   ┌─────────────────────────────────────────────────────────────────────────┐
+   │  ** ANEURISMA SACULAR EN SEGMENTO M2 IZQUIERDO **                      │
+   │                                                                         │
+   │  - Localizacion:       Segmento M2 (insular) de ACM izquierda          │
+   │  - Morfologia:         Sacular                                          │
+   │  - Tamano del saco:    3.5 x 3.2 mm                                     │
+   │  - Cuello:             2.1 mm                                           │
+   │  - Relacion saco/cuello: 1.67                                           │
+   │  - Orientacion:        Lateral                                          │
+   │  - Calcificaciones:    No se observan                                   │
+   │  - Signos de ruptura:  No se identifican                                │
+   └─────────────────────────────────────────────────────────────────────────┘
+
+   Arterias cerebrales anteriores:
+   - Segmentos A1 simetricos y de calibre normal.
+   - Segmentos A2 sin alteraciones.
+   - Arteria comunicante anterior permeable, sin dilataciones aneurismaticas.
+
+   CIRCULACION POSTERIOR:
+
+   - Arterias vertebrales intracraneales de calibre conservado.
+   - Arteria basilar permeable, sin estenosis ni dilataciones.
+   - Arterias cerebrales posteriores (P1 y P2) permeables bilateralmente.
+   - Arterias comunicantes posteriores visualizadas, sin aneurismas.
+   - Arterias cerebelosas (PICA, AICA, SCA) sin alteraciones.
+
+   POLIGONO DE WILLIS:
+   - Configuracion anatomica completa y permeable.
+   - Sin otras dilataciones aneurismaticas.
+
+================================================================================
+                              CONCLUSION
+================================================================================
+
+1. TC CEREBRAL SIN CONTRASTE:
+   Estudio sin evidencia de patologia aguda intracraneal. Parenquima
+   cerebral de caracteristicas normales. Sistema ventricular sin
+   alteraciones. Linea media centrada. Sin signos de hemorragia ni
+   isquemia aguda.
+
+2. ANGIOTC DE ARTERIAS CEREBRALES:
+
+   ╔═══════════════════════════════════════════════════════════════════════╗
+   ║                    HALLAZGOS RELEVANTES                               ║
+   ╠═══════════════════════════════════════════════════════════════════════╣
+   ║                                                                       ║
+   ║  1. ANEURISMA SACULAR en segmento M1 de ACM DERECHA                  ║
+   ║     Dimensiones: 4.2 x 3.8 mm | Cuello: 2.5 mm                       ║
+   ║                                                                       ║
+   ║  2. ANEURISMA SACULAR en segmento M2 de ACM IZQUIERDA                ║
+   ║     Dimensiones: 3.5 x 3.2 mm | Cuello: 2.1 mm                       ║
+   ║                                                                       ║
+   ║  Ambos aneurismas sin signos de ruptura al momento del estudio.      ║
+   ║                                                                       ║
+   ╚═══════════════════════════════════════════════════════════════════════╝
+
+   Resto de la vasculatura intracraneal sin alteraciones.
+
+--------------------------------------------------------------------------------
+                           RECOMENDACIONES
+--------------------------------------------------------------------------------
+
+   - Correlacion clinica.
+   - Valoracion por servicio de Neurocirugia / Neurointervencionismo
+     para definir conducta terapeutica.
+   - Considerar angiografia cerebral diagnostica para mejor
+     caracterizacion morfologica si se considera necesario.
+   - Seguimiento imagenologico segun criterio del especialista tratante.
+
+================================================================================
+                           NOTA ACLARATORIA
+================================================================================
+Este informe fue generado con asistencia de inteligencia artificial como
+herramienta de apoyo al diagnostico. Todos los hallazgos descritos deben
+ser validados y correlacionados clinicamente por el medico radiologo
+responsable. La interpretacion final y el diagnostico definitivo
+corresponden exclusivamente al profesional medico tratante.
+================================================================================
+
+Fecha de elaboracion: 11 de enero de 2026
+
+================================================================================

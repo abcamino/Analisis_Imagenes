@@ -1,0 +1,24 @@
+# Core inference
+onnxruntime>=1.16.0
+numpy>=1.24.0
+
+# Training (only needed for model export)
+torch>=2.0.0
+torchvision>=0.15.0
+timm>=0.9.0
+
+# Visualization
+matplotlib>=3.7.0
+plotly>=5.15.0
+Pillow>=10.0.0
+
+# Utilities
+pyyaml>=6.0
+tqdm>=4.65.0
+
+# Build tools
+pybind11>=2.11.0
+cmake>=3.14
+
+# Testing
+pytest>=7.0.0

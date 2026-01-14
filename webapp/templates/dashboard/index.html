@@ -1,0 +1,101 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard - Aneurysm Detection{% endblock %}
+
+{% block content %}
+<div class="dashboard">
+    <h1>Dashboard</h1>
+
+    <!-- Stats Section -->
+    <div class="stats-grid" hx-get="/api/dashboard/stats" hx-trigger="load" hx-swap="innerHTML">
+        <div class="stat-card">
+            <div class="stat-value">-</div>
+            <div class="stat-label">Total Analyses</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-value">-</div>
+            <div class="stat-label">Detections</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-value">-</div>
+            <div class="stat-label">Detection Rate</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-value">-</div>
+            <div class="stat-label">Avg Time</div>
+        </div>
+    </div>
+
+    <!-- Quick Actions -->
+    <div class="quick-actions">
+        <a href="/upload" class="btn btn-primary btn-large">
+            + New Analysis
+        </a>
+        <a href="/analyses" class="btn btn-secondary">
+            View History
+        </a>
+    </div>
+
+    <!-- Recent Analyses -->
+    <div class="section">
+        <h2>Recent Analyses</h2>
+        <div class="analyses-list"
+             hx-get="/api/dashboard/recent?limit=5"
+             hx-trigger="load"
+             hx-swap="innerHTML">
+            <p class="loading">Loading recent analyses...</p>
+        </div>
+    </div>
+</div>
+
+<script>
+// Handle stats response
+document.body.addEventListener('htmx:afterSwap', function(event) {
+    if (event.detail.target.classList.contains('stats-grid')) {
+        const stats = JSON.parse(event.detail.xhr.responseText);
+        event.detail.target.innerHTML = `
+            <div class="stat-card">
+                <div class="stat-value">${stats.total_analyses}</div>
+                <div class="stat-label">Total Analyses</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value">${stats.aneurysm_count}</div>
+                <div class="stat-label">Detections</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value">${(stats.detection_rate * 100).toFixed(1)}%</div>
+                <div class="stat-label">Detection Rate</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value">${stats.avg_processing_time_ms.toFixed(0)}ms</div>
+                <div class="stat-label">Avg Time</div>
+            </div>
+        `;
+    }
+
+    if (event.detail.target.classList.contains('analyses-list')) {
+        const analyses = JSON.parse(event.detail.xhr.responseText);
+        if (analyses.length === 0) {
+            event.detail.target.innerHTML = '<p class="empty">No analyses yet. Upload an image to get started!</p>';
+        } else {
+            event.detail.target.innerHTML = analyses.map(a => `
+                <div class="analysis-card ${a.has_aneurysm ? 'has-detection' : ''}">
+                    <a href="/analyses/${a.id}">
+                        <div class="analysis-info">
+                            <span class="filename">${a.original_filename}</span>
+                            <span class="result ${a.has_aneurysm ? 'positive' : 'negative'}">
+                                ${a.has_aneurysm ? 'Aneurysm Detected' : 'Normal'}
+                            </span>
+                            <span class="confidence">${(a.max_confidence * 100).toFixed(1)}%</span>
+                        </div>
+                        <div class="analysis-meta">
+                            <span class="time">${new Date(a.created_at).toLocaleString()}</span>
+                        </div>
+                    </a>
+                </div>
+            `).join('');
+        }
+    }
+});
+</script>
+{% endblock %}

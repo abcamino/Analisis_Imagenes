@@ -1,0 +1,236 @@
+{% extends "base.html" %}
+
+{% block title %}Tests - Admin{% endblock %}
+
+{% block content %}
+<div class="admin-container">
+    <h1>Test Runner</h1>
+
+    <div class="admin-actions">
+        <button id="run-tests-btn" class="btn btn-primary">Run Tests</button>
+        <span id="test-status"></span>
+    </div>
+
+    <div id="test-results" class="test-results">
+        <p class="placeholder">Click "Run Tests" to execute the test suite.</p>
+    </div>
+</div>
+
+<script>
+async function getToken() {
+    const cookies = document.cookie.split(';');
+    for (const cookie of cookies) {
+        const [name, value] = cookie.trim().split('=');
+        if (name === 'session_token') {
+            return value;
+        }
+    }
+    return null;
+}
+
+document.getElementById('run-tests-btn').addEventListener('click', async function() {
+    const btn = this;
+    const statusEl = document.getElementById('test-status');
+    const resultsEl = document.getElementById('test-results');
+
+    btn.disabled = true;
+    statusEl.textContent = 'Running tests...';
+    resultsEl.innerHTML = '<p class="placeholder">Executing pytest...</p>';
+
+    try {
+        const response = await fetch('/api/admin/tests/results', {
+            credentials: 'include'
+        });
+
+        if (response.status === 403) {
+            resultsEl.innerHTML = '<p class="error">Admin access required.</p>';
+            statusEl.textContent = '';
+            btn.disabled = false;
+            return;
+        }
+
+        if (response.status === 401) {
+            window.location.href = '/login';
+            return;
+        }
+
+        const data = await response.json();
+
+        if (data.success) {
+            statusEl.textContent = 'Tests completed!';
+            renderResults(data);
+        } else {
+            statusEl.textContent = 'Tests failed';
+            resultsEl.innerHTML = `<p class="error">Error: ${data.error || 'Unknown error'}</p>`;
+        }
+    } catch (error) {
+        statusEl.textContent = 'Error';
+        resultsEl.innerHTML = `<p class="error">Error: ${error.message}</p>`;
+    }
+
+    btn.disabled = false;
+});
+
+function renderResults(data) {
+    const resultsEl = document.getElementById('test-results');
+
+    let html = `
+        <div class="test-summary">
+            <div class="summary-item passed">
+                <span class="count">${data.passed}</span>
+                <span class="label">Passed</span>
+            </div>
+            <div class="summary-item failed">
+                <span class="count">${data.failed}</span>
+                <span class="label">Failed</span>
+            </div>
+            <div class="summary-item total">
+                <span class="count">${data.total}</span>
+                <span class="label">Total</span>
+            </div>
+        </div>
+
+        <p class="summary-line">${data.summary}</p>
+
+        <div class="test-list">
+            <h3>Test Details</h3>
+    `;
+
+    for (const test of data.tests) {
+        const statusClass = test.status === 'passed' ? 'test-passed' : 'test-failed';
+        const statusIcon = test.status === 'passed' ? '&#10003;' : '&#10007;';
+        html += `
+            <div class="test-item ${statusClass}">
+                <span class="test-icon">${statusIcon}</span>
+                <span class="test-name">${test.name}</span>
+            </div>
+        `;
+    }
+
+    html += '</div>';
+    resultsEl.innerHTML = html;
+}
+</script>
+
+<style>
+.admin-container {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 2rem;
+}
+
+.admin-actions {
+    margin-bottom: 2rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+#test-status {
+    color: #7f8c8d;
+    font-style: italic;
+}
+
+.test-results {
+    background: #fff;
+    border-radius: 8px;
+    padding: 1.5rem;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+}
+
+.placeholder {
+    color: #7f8c8d;
+    text-align: center;
+    padding: 2rem;
+}
+
+.test-summary {
+    display: flex;
+    gap: 2rem;
+    margin-bottom: 1.5rem;
+}
+
+.summary-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 1rem 2rem;
+    border-radius: 8px;
+}
+
+.summary-item .count {
+    font-size: 2rem;
+    font-weight: bold;
+}
+
+.summary-item .label {
+    font-size: 0.9rem;
+    color: #666;
+}
+
+.summary-item.passed {
+    background: #e8f5e9;
+    color: #27ae60;
+}
+
+.summary-item.failed {
+    background: #ffebee;
+    color: #e74c3c;
+}
+
+.summary-item.total {
+    background: #e3f2fd;
+    color: #2196f3;
+}
+
+.summary-line {
+    color: #666;
+    margin-bottom: 1.5rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid #eee;
+}
+
+.test-list h3 {
+    margin-bottom: 1rem;
+    color: #333;
+}
+
+.test-item {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 0;
+    border-bottom: 1px solid #f0f0f0;
+    font-family: monospace;
+    font-size: 0.9rem;
+}
+
+.test-item:last-child {
+    border-bottom: none;
+}
+
+.test-icon {
+    width: 20px;
+    font-weight: bold;
+}
+
+.test-passed .test-icon {
+    color: #27ae60;
+}
+
+.test-failed .test-icon {
+    color: #e74c3c;
+}
+
+.test-name {
+    word-break: break-all;
+}
+
+.error {
+    color: #e74c3c;
+    background: #ffebee;
+    padding: 1rem;
+    border-radius: 4px;
+}
+</style>
+{% endblock %}

@@ -1,0 +1,63 @@
+{
+  "metadata": {
+    "source": "AngioTC cerebral",
+    "date": "2026-01-11",
+    "total_aneurysms": 2,
+    "note": "Informe generado con asistencia de IA como herramienta de apoyo"
+  },
+  "aneurysms": [
+    {
+      "id": 1,
+      "location": "M1_ACM_right",
+      "location_description": "Arteria cerebral media derecha, segmento M1",
+      "morphology": "sacular",
+      "dimensions_mm": {
+        "width": 4.2,
+        "height": 3.8
+      },
+      "neck_mm": 2.5,
+      "dome_neck_ratio": 1.68,
+      "orientation": "superior",
+      "rupture_signs": false
+    },
+    {
+      "id": 2,
+      "location": "M2_ACM_left",
+      "location_description": "Arteria cerebral media izquierda, segmento M2",
+      "morphology": "sacular",
+      "dimensions_mm": {
+        "width": 3.5,
+        "height": 3.2
+      },
+      "neck_mm": 2.1,
+      "dome_neck_ratio": 1.67,
+      "orientation": "lateral",
+      "rupture_signs": false
+    }
+  ],
+  "images": [
+    {
+      "filename": "774f9753-1ecb-43b5-9d02-b0e4e5a7e39e.jpg",
+      "view": "coronal",
+      "contains_aneurysm": true,
+      "notes": "Vista coronal del poligono de Willis"
+    },
+    {
+      "filename": "79b32205-97ef-4167-a2cd-4f79fd8aebab.jpg",
+      "view": "axial",
+      "contains_aneurysm": true,
+      "notes": "Vista axial, se observa aneurisma M1 derecho"
+    },
+    {
+      "filename": "b8a63685-cd57-4f83-84b7-899a2eff9560.jpg",
+      "view": "sagittal",
+      "contains_aneurysm": true,
+      "notes": "Vista sagital del sistema vascular"
+    }
+  ],
+  "clinical_conclusion": {
+    "finding": "Dos aneurismas cerebrales saculares pequeños sin signos de ruptura",
+    "recommendation": "Valoracion por Neurocirugia/Neurointervencionismo",
+    "vascular_status": "Resto de vasculatura intracraneal normal"
+  }
+}

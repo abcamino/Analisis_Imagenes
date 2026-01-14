@@ -1,0 +1,48 @@
+# Aneurysm Detection System Configuration
+
+project:
+  name: "Aneurysm Detection System"
+  version: "1.0.0"
+  purpose: "educational"
+
+paths:
+  data_raw: "data/raw"
+  data_processed: "data/processed"
+  models_onnx: "models/onnx"
+  outputs: "outputs"
+
+preprocessing:
+  target_width: 224
+  target_height: 224
+  clahe:
+    enabled: true
+    clip_limit: 2.0
+    tile_grid_size: [8, 8]
+  normalization: "minmax"  # minmax or zscore
+
+model:
+  backbone: "mobilenetv3_small_100"
+  onnx_path: "models/onnx/mobilenetv3_aneurysm.onnx"
+  num_classes: 2
+  class_names: ["normal", "aneurysm"]
+
+inference:
+  device: "cpu"
+  batch_size: 1
+  confidence_threshold: 0.5
+
+postprocessing:
+  nms_threshold: 0.45
+  min_detection_size: 50  # pixels
+  max_detections: 10
+
+visualization:
+  overlay_alpha: 0.4
+  bbox_color: [255, 0, 0]  # Red in BGR
+  bbox_thickness: 2
+  font_scale: 0.6
+  show_confidence: true
+
+logging:
+  level: "INFO"
+  file: "outputs/detection.log"

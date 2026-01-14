@@ -1,0 +1,346 @@
+{% extends "base.html" %}
+
+{% block title %}Database Explorer - Admin{% endblock %}
+
+{% block content %}
+<div class="admin-container">
+    <h1>Database Explorer</h1>
+
+    <div class="db-layout">
+        <div class="tables-sidebar">
+            <h3>Tables</h3>
+            <div id="tables-list" class="tables-list">
+                <p class="placeholder">Loading tables...</p>
+            </div>
+        </div>
+
+        <div class="table-content">
+            <div id="table-header">
+                <h2 id="current-table-name">Select a table</h2>
+                <span id="row-count"></span>
+            </div>
+
+            <div id="table-data" class="table-data">
+                <p class="placeholder">Select a table from the sidebar to view its data.</p>
+            </div>
+
+            <div id="pagination" class="pagination" style="display: none;">
+                <button id="prev-btn" disabled>Previous</button>
+                <span id="page-info"></span>
+                <button id="next-btn">Next</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+let currentTable = null;
+let currentOffset = 0;
+const limit = 50;
+let totalRows = 0;
+
+async function loadTables() {
+    const listEl = document.getElementById('tables-list');
+
+    try {
+        const response = await fetch('/api/admin/database/tables', {
+            credentials: 'include'
+        });
+
+        if (response.status === 403) {
+            listEl.innerHTML = '<p class="error">Admin access required.</p>';
+            return;
+        }
+
+        if (response.status === 401) {
+            window.location.href = '/login';
+            return;
+        }
+
+        const data = await response.json();
+
+        let html = '';
+        for (const table of data.tables) {
+            html += `
+                <div class="table-item" onclick="selectTable('${table.name}')">
+                    <span class="table-name">${table.name}</span>
+                    <span class="table-count">${table.row_count} rows</span>
+                </div>
+            `;
+        }
+
+        listEl.innerHTML = html;
+    } catch (error) {
+        listEl.innerHTML = `<p class="error">Error: ${error.message}</p>`;
+    }
+}
+
+async function selectTable(tableName) {
+    currentTable = tableName;
+    currentOffset = 0;
+
+    document.querySelectorAll('.table-item').forEach(el => el.classList.remove('active'));
+    document.querySelector(`.table-item[onclick="selectTable('${tableName}')"]`)?.classList.add('active');
+
+    await loadTableData();
+}
+
+async function loadTableData() {
+    const dataEl = document.getElementById('table-data');
+    const nameEl = document.getElementById('current-table-name');
+    const countEl = document.getElementById('row-count');
+    const paginationEl = document.getElementById('pagination');
+
+    nameEl.textContent = currentTable;
+    dataEl.innerHTML = '<p class="placeholder">Loading...</p>';
+
+    try {
+        const response = await fetch(`/api/admin/database/tables/${currentTable}?limit=${limit}&offset=${currentOffset}`, {
+            credentials: 'include'
+        });
+
+        const data = await response.json();
+        totalRows = data.total;
+
+        countEl.textContent = `${totalRows} rows total`;
+
+        if (data.rows.length === 0) {
+            dataEl.innerHTML = '<p class="placeholder">No data in this table.</p>';
+            paginationEl.style.display = 'none';
+            return;
+        }
+
+        let html = '<div class="table-wrapper"><table><thead><tr>';
+        for (const col of data.columns) {
+            html += `<th>${col}</th>`;
+        }
+        html += '</tr></thead><tbody>';
+
+        for (const row of data.rows) {
+            html += '<tr>';
+            for (const col of data.columns) {
+                let value = row[col];
+                if (value === null) {
+                    value = '<span class="null-value">NULL</span>';
+                } else if (typeof value === 'string' && value.length > 100) {
+                    value = value.substring(0, 100) + '...';
+                }
+                html += `<td>${value}</td>`;
+            }
+            html += '</tr>';
+        }
+
+        html += '</tbody></table></div>';
+        dataEl.innerHTML = html;
+
+        // Pagination
+        if (totalRows > limit) {
+            paginationEl.style.display = 'flex';
+            updatePagination();
+        } else {
+            paginationEl.style.display = 'none';
+        }
+    } catch (error) {
+        dataEl.innerHTML = `<p class="error">Error: ${error.message}</p>`;
+    }
+}
+
+function updatePagination() {
+    const prevBtn = document.getElementById('prev-btn');
+    const nextBtn = document.getElementById('next-btn');
+    const pageInfo = document.getElementById('page-info');
+
+    const currentPage = Math.floor(currentOffset / limit) + 1;
+    const totalPages = Math.ceil(totalRows / limit);
+
+    pageInfo.textContent = `Page ${currentPage} of ${totalPages}`;
+    prevBtn.disabled = currentOffset === 0;
+    nextBtn.disabled = currentOffset + limit >= totalRows;
+}
+
+document.getElementById('prev-btn').addEventListener('click', async function() {
+    if (currentOffset >= limit) {
+        currentOffset -= limit;
+        await loadTableData();
+    }
+});
+
+document.getElementById('next-btn').addEventListener('click', async function() {
+    if (currentOffset + limit < totalRows) {
+        currentOffset += limit;
+        await loadTableData();
+    }
+});
+
+// Load tables on page load
+loadTables();
+</script>
+
+<style>
+.admin-container {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 2rem;
+}
+
+.db-layout {
+    display: flex;
+    gap: 2rem;
+    margin-top: 1.5rem;
+}
+
+.tables-sidebar {
+    width: 250px;
+    flex-shrink: 0;
+}
+
+.tables-sidebar h3 {
+    margin-bottom: 1rem;
+    color: #333;
+}
+
+.tables-list {
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    overflow: hidden;
+}
+
+.table-item {
+    padding: 0.75rem 1rem;
+    border-bottom: 1px solid #eee;
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: background 0.2s;
+}
+
+.table-item:hover {
+    background: #f5f5f5;
+}
+
+.table-item.active {
+    background: #e3f2fd;
+    border-left: 3px solid #2196f3;
+}
+
+.table-item:last-child {
+    border-bottom: none;
+}
+
+.table-name {
+    font-weight: 500;
+}
+
+.table-count {
+    font-size: 0.8rem;
+    color: #7f8c8d;
+}
+
+.table-content {
+    flex: 1;
+    min-width: 0;
+}
+
+#table-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+}
+
+#table-header h2 {
+    margin: 0;
+}
+
+#row-count {
+    color: #7f8c8d;
+}
+
+.table-data {
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    overflow: hidden;
+}
+
+.table-wrapper {
+    overflow-x: auto;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.9rem;
+}
+
+th, td {
+    padding: 0.75rem 1rem;
+    text-align: left;
+    border-bottom: 1px solid #eee;
+    white-space: nowrap;
+}
+
+th {
+    background: #f8f9fa;
+    font-weight: 600;
+    color: #333;
+    position: sticky;
+    top: 0;
+}
+
+tr:hover {
+    background: #f5f5f5;
+}
+
+.null-value {
+    color: #999;
+    font-style: italic;
+}
+
+.placeholder {
+    color: #7f8c8d;
+    text-align: center;
+    padding: 2rem;
+}
+
+.error {
+    color: #e74c3c;
+    background: #ffebee;
+    padding: 1rem;
+    border-radius: 4px;
+    margin: 1rem;
+}
+
+.pagination {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 1rem;
+    padding: 1rem;
+    margin-top: 1rem;
+}
+
+.pagination button {
+    padding: 0.5rem 1rem;
+    border: 1px solid #ddd;
+    background: #fff;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.pagination button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.pagination button:not(:disabled):hover {
+    background: #f5f5f5;
+}
+
+#page-info {
+    color: #666;
+}
+</style>
+{% endblock %}

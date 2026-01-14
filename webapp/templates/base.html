@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Aneurysm Detection System{% endblock %}</title>
+    <script src="https://unpkg.com/htmx.org@1.9.10"></script>
+    <link rel="stylesheet" href="{{ url_for('static', path='css/styles.css') }}">
+    {% block head %}{% endblock %}
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-brand">
+            <a href="/dashboard">Aneurysm Detection</a>
+        </div>
+        <div class="nav-links">
+            {% if current_user %}
+            <a href="/dashboard">Dashboard</a>
+            <a href="/upload">New Analysis</a>
+            <a href="/analyses">History</a>
+            {% if current_user.is_admin %}
+            <a href="/admin/tests" class="admin-link">Tests</a>
+            <a href="/admin/database" class="admin-link">Database</a>
+            {% endif %}
+            <span class="nav-user">{{ current_user.username }}</span>
+            <form action="/auth/logout" method="post" class="nav-logout">
+                <button type="submit">Logout</button>
+            </form>
+            {% else %}
+            <a href="/login">Login</a>
+            <a href="/register">Register</a>
+            {% endif %}
+        </div>
+    </nav>
+
+    <main class="container">
+        {% block content %}{% endblock %}
+    </main>
+
+    <footer class="footer">
+        <p>For educational purposes only. NOT for clinical diagnosis.</p>
+    </footer>
+
+    {% block scripts %}{% endblock %}
+</body>
+</html>

@@ -1,0 +1,124 @@
+{% extends "base.html" %}
+
+{% block title %}Upload Image - Aneurysm Detection{% endblock %}
+
+{% block content %}
+<div class="upload-page">
+    <h1>Analyze New Image</h1>
+
+    <div class="upload-container">
+        <form id="upload-form"
+              hx-post="/api/analyses"
+              hx-encoding="multipart/form-data"
+              hx-target="#result"
+              hx-indicator="#loading">
+
+            <div class="upload-zone" id="drop-zone">
+                <div class="upload-icon">+</div>
+                <p>Drag and drop an image here</p>
+                <p>or</p>
+                <label for="file-input" class="btn btn-secondary">
+                    Choose File
+                </label>
+                <input type="file" id="file-input" name="file"
+                       accept=".jpg,.jpeg,.png,.bmp,.tiff" required hidden>
+                <p class="file-name" id="file-name"></p>
+            </div>
+
+            <div class="form-group">
+                <label for="session_id">Add to Session (optional)</label>
+                <select id="session_id" name="session_id">
+                    <option value="">No session</option>
+                </select>
+            </div>
+
+            <button type="submit" class="btn btn-primary btn-large">
+                Analyze Image
+            </button>
+        </form>
+
+        <div id="loading" class="htmx-indicator">
+            <div class="spinner"></div>
+            <p>Analyzing image... This may take a few seconds.</p>
+        </div>
+
+        <div id="result"></div>
+    </div>
+</div>
+
+<script>
+// File input handling
+const fileInput = document.getElementById('file-input');
+const fileName = document.getElementById('file-name');
+const dropZone = document.getElementById('drop-zone');
+
+fileInput.addEventListener('change', function() {
+    if (this.files.length > 0) {
+        fileName.textContent = this.files[0].name;
+    }
+});
+
+// Drag and drop
+dropZone.addEventListener('dragover', (e) => {
+    e.preventDefault();
+    dropZone.classList.add('dragover');
+});
+
+dropZone.addEventListener('dragleave', () => {
+    dropZone.classList.remove('dragover');
+});
+
+dropZone.addEventListener('drop', (e) => {
+    e.preventDefault();
+    dropZone.classList.remove('dragover');
+    fileInput.files = e.dataTransfer.files;
+    if (fileInput.files.length > 0) {
+        fileName.textContent = fileInput.files[0].name;
+    }
+});
+
+// Handle response
+document.body.addEventListener('htmx:afterSwap', function(event) {
+    if (event.detail.target.id === 'result') {
+        try {
+            const data = JSON.parse(event.detail.xhr.responseText);
+            const resultClass = data.has_aneurysm ? 'detection-positive' : 'detection-negative';
+            event.detail.target.innerHTML = `
+                <div class="result-card ${resultClass}">
+                    <h2>${data.has_aneurysm ? 'Aneurysm Detected!' : 'No Aneurysm Detected'}</h2>
+                    <div class="result-details">
+                        <p><strong>Confidence:</strong> ${(data.max_confidence * 100).toFixed(1)}%</p>
+                        <p><strong>Processing Time:</strong> ${data.total_time_ms?.toFixed(1)}ms</p>
+                        <p><strong>Detections:</strong> ${data.num_detections}</p>
+                    </div>
+                    <div class="result-actions">
+                        <a href="/analyses/${data.id}" class="btn btn-primary">View Details</a>
+                        <a href="/upload" class="btn btn-secondary">Analyze Another</a>
+                    </div>
+                </div>
+            `;
+        } catch (e) {
+            event.detail.target.innerHTML = `
+                <div class="error">
+                    <p>Error: ${event.detail.xhr.responseText}</p>
+                </div>
+            `;
+        }
+    }
+});
+
+// Load sessions
+fetch('/api/sessions?is_active=true')
+    .then(r => r.json())
+    .then(sessions => {
+        const select = document.getElementById('session_id');
+        sessions.forEach(s => {
+            const option = document.createElement('option');
+            option.value = s.id;
+            option.textContent = s.name || `Session ${s.id}`;
+            select.appendChild(option);
+        });
+    })
+    .catch(() => {});
+</script>
+{% endblock %}

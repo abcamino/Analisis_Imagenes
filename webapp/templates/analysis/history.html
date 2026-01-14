@@ -1,0 +1,98 @@
+{% extends "base.html" %}
+
+{% block title %}Analysis History - Aneurysm Detection{% endblock %}
+
+{% block content %}
+<div class="history-page">
+    <h1>Analysis History</h1>
+
+    <div class="filters">
+        <label>
+            <input type="checkbox" id="filter-aneurysm" onchange="applyFilters()">
+            Only show detections
+        </label>
+    </div>
+
+    <div class="analyses-list" id="analyses-list">
+        <p class="loading">Loading analyses...</p>
+    </div>
+
+    <div class="pagination" id="pagination"></div>
+</div>
+
+<script>
+let currentPage = 0;
+const pageSize = 20;
+let filterAneurysm = false;
+
+function loadAnalyses() {
+    let url = `/api/analyses?skip=${currentPage * pageSize}&limit=${pageSize}`;
+    if (filterAneurysm) {
+        url += '&has_aneurysm=true';
+    }
+
+    fetch(url)
+        .then(r => r.json())
+        .then(analyses => {
+            const container = document.getElementById('analyses-list');
+
+            if (analyses.length === 0) {
+                container.innerHTML = '<p class="empty">No analyses found.</p>';
+                return;
+            }
+
+            container.innerHTML = analyses.map(a => `
+                <div class="analysis-card ${a.has_aneurysm ? 'has-detection' : ''}">
+                    <a href="/analyses/${a.id}">
+                        <div class="analysis-info">
+                            <span class="filename">${a.original_filename}</span>
+                            <span class="result ${a.has_aneurysm ? 'positive' : 'negative'}">
+                                ${a.has_aneurysm ? 'Aneurysm Detected' : 'Normal'}
+                            </span>
+                            <span class="confidence">${(a.max_confidence * 100).toFixed(1)}%</span>
+                        </div>
+                        <div class="analysis-meta">
+                            <span class="time">${new Date(a.created_at).toLocaleString()}</span>
+                            <span class="processing">${a.total_time_ms?.toFixed(0) || '-'}ms</span>
+                        </div>
+                    </a>
+                </div>
+            `).join('');
+
+            // Update pagination
+            const pagination = document.getElementById('pagination');
+            pagination.innerHTML = `
+                <button onclick="prevPage()" ${currentPage === 0 ? 'disabled' : ''}>Previous</button>
+                <span>Page ${currentPage + 1}</span>
+                <button onclick="nextPage()" ${analyses.length < pageSize ? 'disabled' : ''}>Next</button>
+            `;
+        })
+        .catch(err => {
+            document.getElementById('analyses-list').innerHTML = `
+                <p class="error">Failed to load analyses: ${err.message}</p>
+            `;
+        });
+}
+
+function applyFilters() {
+    filterAneurysm = document.getElementById('filter-aneurysm').checked;
+    currentPage = 0;
+    loadAnalyses();
+}
+
+function prevPage() {
+    if (currentPage > 0) {
+        currentPage--;
+        loadAnalyses();
+    }
+}
+
+function nextPage() {
+    currentPage++;
+    loadAnalyses();
+}
+
+// Initial load
+loadAnalyses();
+</script>
+{% endblock %}

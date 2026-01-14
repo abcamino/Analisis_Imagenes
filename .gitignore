@@ -1,0 +1,100 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# Virtual environments
+venv/
+ENV/
+env/
+.venv/
+training/training_env/
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# Testing
+.pytest_cache/
+.coverage
+htmlcov/
+coverage-report/
+test-report.xml
+test-report.html
+.tox/
+
+# Database
+*.db
+*.sqlite
+*.sqlite3
+webapp/aneurysm_app.db
+
+# Uploads (keep directory structure, ignore content)
+webapp/uploads/*
+!webapp/uploads/.gitkeep
+
+# Logs
+*.log
+
+# Environment variables
+.env
+.env.local
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# C++ build artifacts
+*.obj
+*.exe
+*.dll
+*.pdb
+*.ilk
+*.exp
+*.lib
+src/cpp_module/*.obj
+src/cpp_module/*.exe
+src/cpp_module/*.dll
+src/cpp_module/*.pdb
+
+# Model files (large binary)
+models/onnx/*.onnx
+models/checkpoints/
+
+# Data files (large)
+data/raw/*
+data/processed/*
+!data/raw/.gitkeep
+!data/processed/.gitkeep
+
+# Temporary files
+*.tmp
+*.temp
+tmpclaude-*
+nul
+
+# Claude Code
+.claude/
+
+# Generated outputs
+outputs/
